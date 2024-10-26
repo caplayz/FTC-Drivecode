@@ -37,7 +37,7 @@ public class TeleOpMode extends OpMode
     private double armBasePower = 0;
     private double jointOnePower = 0;
 
-private boolean alignMode = false;
+    private boolean alignMode = false;
     private static boolean targetBlue = true; // Default to blue target
     private OpenCvCamera camera;
     /**
@@ -159,7 +159,7 @@ private boolean alignMode = false;
         } else if (gamepad1.dpad_down) {
             armBasePower = -0.5;
         } else {
-            armPower = 0;
+            armBasePower = 0;
         }
 
         armBasePower *= 0.05;
@@ -168,7 +168,7 @@ private boolean alignMode = false;
         core.armBaseMotor.setPower(armBasePower);
         core.jointOneMotor.setPower(jointOnePower);
         // Send calculated power to arm motor
-        armMotor.setPower(armPower);
+        core.armBaseMotor.setPower(armBasePower);
 
         // Show the elapsed game time and wheel power.
         // Telemetry
