@@ -61,6 +61,8 @@ public class TeleOpMode extends OpMode
     private RateLimiter frontRightLimiter = new RateLimiter(0.05);
     private RateLimiter backLeftLimiter = new RateLimiter(0.05);
     private RateLimiter backRightLimiter = new RateLimiter(0.05);
+    
+
 
 
 
@@ -247,8 +249,7 @@ public class TeleOpMode extends OpMode
             armBasePower = 0;
         }
 
-
-        //move hand (right trigger and bumper)i
+        //move hand (right trigger and bumper)
         if (gamepad1.right_trigger>0) {
             telemetry.addData("right trigger",true);
             telemetry.addData("right bumper",false);

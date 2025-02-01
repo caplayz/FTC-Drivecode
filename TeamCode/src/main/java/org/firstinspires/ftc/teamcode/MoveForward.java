@@ -11,7 +11,7 @@ public class MoveForward extends LinearOpMode {
         util core = new util();
         core.init(hardwareMap);
         telemetry.addLine("Waiting for start");
-        telemetry.addLine("Make sure you stop after because I make the wheels stop in this code");
+        telemetry.addLine("Make sure you stop after because I don't make the wheels stop in this code");
         updateTelemetry(telemetry);
         waitForStart();
         while(opModeIsActive()){
