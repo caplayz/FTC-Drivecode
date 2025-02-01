@@ -19,7 +19,8 @@ public class TeleOpMode3 extends LinearOpMode {
         // --- Define variables ---
         double armBasePower;
         double handPower = 0.3;
-        double speedFactor = 0.6;
+        double baseSpeedFactor = 0.6;
+        double speedFactor;
         ElapsedTime runtime = new ElapsedTime();
 
         telemetry.addData("Status", "Initialized");
@@ -30,10 +31,12 @@ public class TeleOpMode3 extends LinearOpMode {
 
         while (opModeIsActive()) {
             // --- Drive Movement ---
+            // Precision mode
+            speedFactor = gamepad1.left_bumper ? 0.2 : baseSpeedFactor;
             // Scale the joystick inputs to slow down movement
             double y = -gamepad1.left_stick_y * speedFactor; // Forward/backward is scaled
-            double x = gamepad1.left_stick_x * speedFactor * 1.1; // Strafing (with adjustment)
-            double rx = gamepad1.right_stick_x * speedFactor; // Rotation is scaled
+            double x = -gamepad1.left_stick_x * speedFactor * 1.1; // Strafing (with adjustment)
+            double rx = -gamepad1.right_stick_x * speedFactor; // Rotation is scaled
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
