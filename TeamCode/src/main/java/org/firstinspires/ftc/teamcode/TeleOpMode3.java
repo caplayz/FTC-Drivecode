@@ -71,8 +71,6 @@ public class TeleOpMode3 extends LinearOpMode {
                 core.handServo.setPower(handPower);
             } else if (gamepad1.right_bumper) {
                 core.handServo.setPower(-handPower);
-            } else {
-                core.handServo.setPower(0);
             }
 
             // --- Telemetry ---
