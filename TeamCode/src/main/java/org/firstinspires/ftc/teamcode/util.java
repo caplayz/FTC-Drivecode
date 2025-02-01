@@ -13,8 +13,9 @@ public class util {
     public DcMotor backRightDrive = null;
     public DcMotor armBaseMotor = null;
     public DcMotor jointOneMotor = null;
-    public Servo leftHandServo = null;
-    public Servo rightHandServo = null;
+    //public Servo leftHandServo = null;
+    //public Servo rightHandServo = null;
+    public CRServo handServo = null;
     /**
      * Initializes motors and servos
      * @param hardwareMap
@@ -32,7 +33,8 @@ public class util {
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         armBaseMotor = hardwareMap.get(DcMotor.class, "arm_base");
         //jointOneMotor = hardwareMap.get(DcMotor.class, "joint_one");
-        leftHandServo = hardwareMap.get(Servo.class, "left_finger");
+        handServo = hardwareMap.get(CRServo.class, "hand");
+        //leftHandServo = hardwareMap.get(Servo.class, "left_finger");
         //rightHandServo = hardwareMap.get(Servo.class, "right_finger");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -44,7 +46,8 @@ public class util {
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
         armBaseMotor.setDirection(DcMotor.Direction.FORWARD); // REV Robotics 20:1 HD Hex Motor
         //jointOneMotor.setDirection(DcMotor.Direction.FORWARD); // REV Robotics Core Hex Motor
-        leftHandServo.setDirection(Servo.Direction.FORWARD);
+        //leftHandServo.setDirection(Servo.Direction.FORWARD);
+        handServo.setDirection(CRServo.Direction.FORWARD);
         //rightHandServo.setDirection(Servo.Direction.FORWARD);
 
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

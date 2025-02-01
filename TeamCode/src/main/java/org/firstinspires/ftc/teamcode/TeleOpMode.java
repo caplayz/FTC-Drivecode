@@ -30,7 +30,8 @@ public class TeleOpMode extends OpMode
     util core = new util();
     double movementSpeedMultiplier = 1.0;
     double armBasePower = 0;
-    double jointOnePower = 0;
+    double handPower = 0.3;
+    //double jointOnePower = 0;
 
     boolean alignMode = false;
     static boolean targetBlue = true; // Default to blue target
@@ -38,7 +39,7 @@ public class TeleOpMode extends OpMode
 
     // Proportional control constants
     private static final double ROTATION_KP = 0.005; // Adjust as needed
-    private static final double STRAFE_KP = 0.01;   // Adjust as needed
+    //private static final double STRAFE_KP = 0.01;   // Adjust as needed
 
     // Maximum power limits to prevent overcorrection
     private static final double MAX_ROTATION_POWER = 0.3;
@@ -46,7 +47,7 @@ public class TeleOpMode extends OpMode
 
     // Dead Zone Thresholds
     private static final double CENTER_X_THRESHOLD = 10.0; // Pixels
-    private static final double ANGLE_THRESHOLD = 2.0;     // Degrees
+    //private static final double ANGLE_THRESHOLD = 2.0;     // Degrees
 
     // PID Controllers
     private PIDController strafePID;
@@ -60,6 +61,8 @@ public class TeleOpMode extends OpMode
     private RateLimiter frontRightLimiter = new RateLimiter(0.05);
     private RateLimiter backLeftLimiter = new RateLimiter(0.05);
     private RateLimiter backRightLimiter = new RateLimiter(0.05);
+
+
 
     // Timing for PID calculations
     private ElapsedTime pidTimer = new ElapsedTime();
@@ -135,10 +138,10 @@ public class TeleOpMode extends OpMode
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        double frontLeftPower = 0;
-        double frontRightPower = 0;
-        double backLeftPower = 0;
-        double backRightPower = 0;
+        double frontLeftPower;
+        double frontRightPower;
+        double backLeftPower;
+        double backRightPower;
 
         // Toggle alignment mode with 'A' button
         alignMode = gamepad1.a;
@@ -175,9 +178,12 @@ public class TeleOpMode extends OpMode
             if (Math.abs(strafePID.setpoint - filteredCenterX) <= CENTER_X_THRESHOLD) {
                 strafePower = 0;
             }
+            /*
             if (Math.abs(turnPower) <= ANGLE_THRESHOLD) {
                 turnPower = 0;
             }
+            */
+
 
             // Combine strafing and turning powers
             frontLeftPower = -strafePower - turnPower;
@@ -200,15 +206,26 @@ public class TeleOpMode extends OpMode
             // Standard drive mode
             movementSpeedMultiplier = gamepad1.left_bumper ? 0.2 : 1.0;
 
-            double drive = -gamepad1.left_stick_y * movementSpeedMultiplier;
-            double strafe = gamepad1.left_stick_x * movementSpeedMultiplier; // Reduce strafing speed
-            double turn = gamepad1.right_stick_x * movementSpeedMultiplier;
+            double drive = gamepad1.left_stick_y * movementSpeedMultiplier;
+            double strafe = gamepad1.left_stick_x * movementSpeedMultiplier * 1.1; // Reduce strafing speed
+            double turn = -gamepad1.right_stick_x * movementSpeedMultiplier;
+            // drive = y strafe = x rx = turn
+            // Scale the joystick inputs to slow down movement
 
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
+            frontLeftPower = (drive + strafe + turn) / denominator;
+            backLeftPower = (drive - strafe + turn) / denominator;
+            frontRightPower = (drive - strafe - turn) / denominator;
+            backRightPower = (drive + strafe - turn) / denominator;
+            /*
             frontLeftPower = drive + strafe + turn;
             frontRightPower = drive - strafe - turn;
             backLeftPower = drive - strafe + turn;
             backRightPower = drive + strafe - turn;
-
+            */
             frontLeftPower = Range.clip(frontLeftPower, -1.0, 1.0);
             frontRightPower = Range.clip(frontRightPower, -1.0, 1.0);
             backLeftPower = Range.clip(backLeftPower, -1.0, 1.0);
@@ -230,11 +247,22 @@ public class TeleOpMode extends OpMode
             armBasePower = 0;
         }
 
-        //move hand (right trigger and bumper)
+
+        //move hand (right trigger and bumper)i
         if (gamepad1.right_trigger>0) {
-            core.leftHandServo.setPosition(1);
-        }else{
-            core.leftHandServo.setPosition(0);
+            telemetry.addData("right trigger",true);
+            telemetry.addData("right bumper",false);
+            core.handServo.setPower(handPower);
+        }
+        else if(gamepad1.right_bumper){
+            telemetry.addData("right trigger",false);
+            telemetry.addData("right bumper",true);
+            core.handServo.setPower(-handPower);
+        }
+        else{
+            telemetry.addData("right bumper",false);
+            telemetry.addData("right trigger",false);
+            core.handServo.setPower(0);
         }
 
         armBasePower *= 0.75;
@@ -248,6 +276,7 @@ public class TeleOpMode extends OpMode
         telemetry.addData("Motors", String.format("FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",
                 frontLeftPower, frontRightPower, backLeftPower, backRightPower));
         telemetry.addData("Arm Base Power", armBasePower);
+        telemetry.addData("hand servo power", core.handServo.getPower());
         //telemetry.addData("Joint One Power", jointOnePower);
         telemetry.addData("Alignment Mode", alignMode ? "ON" : "OFF");
         telemetry.addData("Target Color", targetBlue ? "Blue" : "Red");
