@@ -50,11 +50,11 @@ public class util {
         handServo.setDirection(CRServo.Direction.FORWARD);
         //rightHandServo.setDirection(Servo.Direction.FORWARD);
 
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armBaseMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      //  frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        armBaseMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //jointOneMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
